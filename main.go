@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"github.com/ErfanMomeniii/AuthForm/configs"
 	"gorm.io/driver/mysql"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	"gorm.io/gorm"
 )
 type User struct {
@@ -40,6 +42,14 @@ func register(w http.ResponseWriter,r *http.Request, db *gorm.DB){
 		Username : r.FormValue("username"),
 		Password: r.FormValue("password"),
 		Email : r.FormValue("email"),
+	}
+
+	if err := validation.ValidateStruct(
+		validation.Field(&user.Username, validation.Required),
+		validation.Field(&user.Password, validation.Required),
+		validation.Field(&user.Email, validation.Required,is.Email),
+	);err!=nil {
+		return err;
 	}
 
 	db.Create(user)
