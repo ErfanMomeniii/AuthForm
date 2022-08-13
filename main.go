@@ -49,7 +49,8 @@ func register(w http.ResponseWriter,r *http.Request, db *gorm.DB){
 		validation.Field(&user.Password, validation.Required),
 		validation.Field(&user.Email, validation.Required,is.Email),
 	);err!=nil {
-		return err;
+		http.Error(w,"form data has a problem",http.StatusBadRequest);
+		return 
 	}
 
 	db.Create(user)
